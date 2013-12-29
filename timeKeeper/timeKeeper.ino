@@ -1,47 +1,33 @@
-/*
- * TimeRTC.pde
- * example code illustrating Time library with Real Time Clock.
- * 
- */
-
 #include <Time.h>  
 #include <Wire.h>  
-#include <DS1307RTC.h>  // a basic DS1307 library that returns time as a time_t
+#include <stdio.h>
+#include <LiquidCrystal.h>
+#include <DS1307RTC.h>
+
+#define MAX_LCD_STRING_LEN 16
+
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+char displayBuffer[MAX_LCD_STRING_LEN+1] = "";
+int gPrevSecond = 0;
 
 void setup()  {
-  Serial.begin(9600);
-  setSyncProvider(RTC.get);   // the function to get the time from the RTC
-  if(timeStatus()!= timeSet) 
-     Serial.println("Unable to sync with the RTC");
-  else
-     Serial.println("RTC has set the system time");      
+//  serialInit();
+  lcdInit();
+  rtcTimeInit();
+  gPrevSecond = second();
 }
 
 void loop()
 {
-   digitalClockDisplay();  
-   delay(1000);
+  if(gPrevSecond != second())
+  {
+    lcd.setCursor(0, 0);
+    Serial.print(getTimeString());
+    lcd.print(getTimeString());
+    lcd.setCursor(0, 1);
+    Serial.print(getDateString());
+    lcd.print(getDateString());
+    gPrevSecond = second();
+  }
+  // TODO: Button Press Check
 }
-
-void digitalClockDisplay(){
-  // digital clock display of the time
-  Serial.print(hour());
-  printDigits(minute());
-  printDigits(second());
-  Serial.print(" ");
-  Serial.print(day());
-  Serial.print(" ");
-  Serial.print(month());
-  Serial.print(" ");
-  Serial.print(year()); 
-  Serial.println(); 
-}
-
-void printDigits(int digits){
-  // utility function for digital clock display: prints preceding colon and leading 0
-  Serial.print(":");
-  if(digits < 10)
-    Serial.print('0');
-  Serial.print(digits);
-}
-
