@@ -6,12 +6,14 @@
 
 #define MAX_LCD_STRING_LEN 16
 
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+LiquidCrystal lcd(8, 13, 9, 4, 5, 6, 7);
+
 char displayBuffer[MAX_LCD_STRING_LEN+1] = "";
+
 int gPrevSecond = 0;
 
 void setup()  {
-//  serialInit();
+  serialInit();
   lcdInit();
   rtcTimeInit();
   gPrevSecond = second();
