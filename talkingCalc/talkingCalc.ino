@@ -13,7 +13,7 @@ SdFat sd;
 SFEMP3Shield MP3player;
 int16_t last_ms_char;
 int8_t buffer_pos; 
-
+ 
 char buffer[6];
 
 void setup() {
