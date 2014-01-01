@@ -9,16 +9,27 @@
 #include <SimpleTimer.h>
 #endif
 
+const int BUTTON_PRESS_PIN = A1;
+const int DATA_PIN = A2;
+const int ACK_PIN = A3;
+
+
 SdFat sd;
 SFEMP3Shield MP3player;
 
+int language=0;
 int hours = 0;
-int min = 0;
+int mins = 0;
+int secs = 0;
 int ampm = 0;
 
 void setup() {
 
   uint8_t result;
+  pinMode(DATA_PIN,INPUT);
+  pinMode(ACK_PIN,OUTPUT);
+  pinMode(BUTTON_PRESS_PIN,INPUT);
+
   Serial.begin(115200);
   Serial.print(F("Free RAM = "));
   Serial.print(FreeRam(), DEC);
@@ -61,147 +72,37 @@ void loop() {
     MP3player.available();
 #endif
 
-  //	if (getTimefromArduinoOne()) {
-  //		parse_menu(); // get command from serial input
-  //	}
+  if (checkButtonPin(10)) {
+    sendAck();
+    language = receiveData();
+    hours = receiveData();
+    mins = receiveData();
+    secs = receiveData();
+    if (hours != -1 && mins != -1 && secs != -1 || language != -1)
+    {
+      if(hours > 12){
+        hours -=12;
+        ampm = 62;
+      }
+      else
+        ampm=61;
+      playTime();
+    }
+
+  }
 
   for (int i = 0; i < 10; i++) {
     hours = i;
-    parse_menu();
+    playTime();
   }
 }
 
-void parse_menu() {
-  uint8_t result;
-  int key_command = 0;
-  Serial.print(F("Received command: "));
-  Serial.write(key_command);
-  Serial.println(F(" "));
 
-  char title[30];
-  char artist[30];
-  char album[30];
 
-  if (!sd.chdir("/english/"))
-    sd.errorHalt("sd.chdir");
 
-  for (int i = 0; i < 3; i++) {
-    switch (i) {
-    case 0:
-      key_command = hours;
-      break;
-    case 1:
-      key_command = min;
-      break;
-    case 2:
-      key_command = ampm;
-      break;
-    default:
-      break;
-    }
 
-    if (key_command >= 1 && key_command <= 62) {
-      result = MP3player.playTrack(key_command);
-      if (result != 0) {
-        Serial.print(F("Error code: "));
-        Serial.print(result);
-        Serial.println(F(" when trying to play track"));
-      } 
-      else {
-        Serial.println(F("Playing:"));
-        MP3player.trackTitle((char*) &title);
-        MP3player.trackArtist((char*) &artist);
-        MP3player.trackAlbum((char*) &album);
-        Serial.write((byte*) &title, 30);
-        Serial.println();
-        Serial.print(F("by:  "));
-        Serial.write((byte*) &artist, 30);
-        Serial.println();
-        Serial.print(F("Album:  "));
-        Serial.write((byte*) &album, 30);
-        Serial.println();
-      }
-    }
-  }
 
-  if (!sd.chdir("/english/"))
-    sd.errorHalt("sd.chdir");
 
-  for (int i = 0; i < 3; i++) {
-    switch (i) {
-    case 0:
-      key_command = hours;
-      break;
-    case 1:
-      key_command = min;
-      break;
-    case 2:
-      key_command = ampm;
-      break;
-    default:
-      break;
-    }
-
-    if (key_command >= 1 && key_command <= 62) {
-      result = MP3player.playTrack(key_command);
-      if (result != 0) {
-        Serial.print(F("Error code: "));
-        Serial.print(result);
-        Serial.println(F(" when trying to play track"));
-      } 
-      else {
-        Serial.println(F("Playing:"));
-        MP3player.trackTitle((char*) &title);
-        MP3player.trackArtist((char*) &artist);
-        MP3player.trackAlbum((char*) &album);
-        Serial.write((byte*) &title, 30);
-        Serial.println();
-        Serial.print(F("by:  "));
-        Serial.write((byte*) &artist, 30);
-        Serial.println();
-        Serial.print(F("Album:  "));
-        Serial.write((byte*) &album, 30);
-        Serial.println();
-      }
-    }
-  }
-}
-
-int getTimefromArduinoOne() {
-  for (int i = 0; i < 100; i++) {
-    if (digitalRead(A0) == HIGH) {
-      digitalWrite(A1, HIGH);
-      delay(100);
-      digitalWrite(A1, LOW);
-      hours = analogRead(A2) / 17;
-    }
-    delay(10);
-    while (digitalRead(A0) == LOW)
-      ;
-    while (digitalRead(A0) == HIGH)
-      ;
-    delay(10);
-    if (digitalRead(A0) == HIGH) {
-      digitalWrite(A1, HIGH);
-      delay(100);
-      digitalWrite(A1, LOW);
-      min = analogRead(A2) / 17;
-    }
-    while (digitalRead(A0) == LOW)
-      ;
-    while (digitalRead(A0) == HIGH)
-      ;
-    delay(10);
-    if (digitalRead(A0) == HIGH) {
-      digitalWrite(A1, HIGH);
-      delay(100);
-      digitalWrite(A1, LOW);
-      ampm = analogRead(A2) / 17;
-    }
-    return 1;
-  }
-  return 0;
-}
 
 
 
