@@ -1,12 +1,19 @@
-#include "keypadConst.h"
+#define NUM_KEYS 5
+unsigned int adc_key_val[NUM_KEYS] ={
+  50, 200, 400, 600, 800 
+};
 
 
+enum keydown{
+  PRESSED,
+  RELEASED
+};
 
 
 keydown keypadStatus = RELEASED;
 keypressed prevKey = NONE;
 
-keypressed get_key()
+int get_key()
 {
   unsigned int k;
   unsigned int input = analogRead(0); 

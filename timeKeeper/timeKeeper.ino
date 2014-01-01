@@ -12,7 +12,18 @@ char displayBuffer[MAX_LCD_STRING_LEN+1] = "";
 
 int gPrevSecond = 0;
 
-void setup()  {
+enum keypressed{
+  RIGHT=0,
+  UP,
+  DOWN,
+  LEFT,
+  SELECT,
+  NONE,
+  INVALID
+};
+
+void setup() 
+{
   serialInit();
   lcdInit();
   rtcTimeInit();
@@ -31,5 +42,7 @@ void loop()
     lcd.print(getDateString());
     gPrevSecond = second();
   }
-  // TODO: Button Press Check
+  Serial.println(get_key());
+  if(get_key()!=NONE)
+    sendData(get_key());
 }
