@@ -1,10 +1,6 @@
 void playTime() {
   uint8_t result;
   int key_command = 0;
-  Serial.print(F("Received command: "));
-  Serial.write(key_command);
-  Serial.println(F(" "));
-
   char title[30];
   char artist[30];
   char album[30];
@@ -14,6 +10,7 @@ void playTime() {
     if (!sd.chdir("/english/"))
     {
       sd.errorHalt("sd.chdir");
+      Serial.print(F("Error ChangeDir"));
       return;
     }
   }
@@ -22,6 +19,7 @@ void playTime() {
     if (!sd.chdir("/arabic/"))
     {
       sd.errorHalt("sd.chdir");
+      Serial.print(F("Error ChangeDir"));
       return;
     }
   }
@@ -69,5 +67,6 @@ void playTime() {
     }
   }
 }
+
 
 

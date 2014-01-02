@@ -12,6 +12,10 @@ char displayBuffer[MAX_LCD_STRING_LEN+1] = "";
 
 int gPrevSecond = 0;
 
+const int BUTTON_PRESS_PIN = A1;
+const int DATA_PIN = A2;
+const int ACK_PIN = A3;
+
 enum keypressed{
   RIGHT=0,
   UP,
@@ -24,6 +28,9 @@ enum keypressed{
 
 void setup() 
 {
+  pinMode(DATA_PIN,OUTPUT);
+  pinMode(ACK_PIN,INPUT);
+  pinMode(BUTTON_PRESS_PIN,OUTPUT);
   serialInit();
   lcdInit();
   rtcTimeInit();
@@ -46,3 +53,4 @@ void loop()
   if(get_key()!=NONE)
     sendData(get_key());
 }
+

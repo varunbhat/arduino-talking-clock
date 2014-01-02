@@ -1,6 +1,4 @@
-const int BUTTON_PRESS_PIN = A1;
-const int DATA_PIN = A2;
-const int ACK_PIN = A3;
+
 
 char * getDateString(){
   snprintf(displayBuffer,MAX_LCD_STRING_LEN,"Date:%d/%d/%d\n",day(),month(),year());
