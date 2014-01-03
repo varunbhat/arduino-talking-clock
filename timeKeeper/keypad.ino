@@ -36,9 +36,8 @@ int get_key()
         return SELECT; 
         break;
       default: 
-        return INVALID; 
+        return NONE; 
         break;
-
       }
     }
   }

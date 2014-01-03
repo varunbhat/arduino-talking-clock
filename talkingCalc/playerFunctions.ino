@@ -10,7 +10,7 @@ void playTime() {
     if (!sd.chdir("/english/"))
     {
       sd.errorHalt("sd.chdir");
-      Serial.print(F("Error ChangeDir"));
+      Serial.print(F("Error"));
       return;
     }
   }
@@ -19,7 +19,7 @@ void playTime() {
     if (!sd.chdir("/arabic/"))
     {
       sd.errorHalt("sd.chdir");
-      Serial.print(F("Error ChangeDir"));
+      Serial.print(F("Error"));
       return;
     }
   }
@@ -63,6 +63,7 @@ void playTime() {
         Serial.print(F("Album:  "));
         Serial.write((byte*) &album, 30);
         Serial.println();
+        delay(2000);
       }
     }
   }
